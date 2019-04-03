@@ -1,0 +1,13 @@
+
+#include "types.h"
+#include "types_rikaya.h"
+#include "libumps.h"
+#include "p1.5test_rikaya_v0.h"
+#include "listx.h"
+#include "const.h"
+#include "pcb.h"
+#include "utils.h"
+#include "main.h"
+#include "scheduler.h"
+#include "interrupts.h"
+#include "handlers.h"
