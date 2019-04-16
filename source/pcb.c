@@ -68,61 +68,23 @@ int emptyProcQ(struct list_head *head)//ritorna TRUE se la lista e' vuota
 
 struct list_head* insertProcQ(struct list_head* head,pcb_t * p){//funzione che inserisce un processo in una lista tenendo        conto della sua priorita'
 pcb_t *ptr;
-
 if (emptyProcQ(head)){
-  addokbuf("vuota ");
-  if (p->priority == 3){
-      addokbuf("\nprima priorita 3 ");
-
-  }
   //controllo se la lista e vuota e nel caso aggiungo il primo elemento
   list_add(&(p->p_next), head);
 
   return head;
 }
-else if (p->priority == 10){//Inserimento in testa, processo con maggiore priorita
 
-  list_add(&p->p_next, head);
+	list_for_each_entry(ptr, head, p_next) {
+    	if (p->priority > ptr->priority) {
+    		list_add(&(p->p_next), &(ptr->p_next));
+    		return head;
+    	}
+	}
+//  addokbuf("ciao");
+
+	list_add_tail(&p->p_next, head);
   return head;
-}
-else if (p->priority == 0){//Inserimento in coda, processo con priorita minima
-
-  list_add_tail(&p->p_next, head);
-  return head;
-}
-else if( ( list_is_last(&((head->next)->next),head))){
-  /*Inserimento del 2 elemento in testa,
-  perchè list_for_each_entry non funziona se
-  c'e solo un elemento*/
-  addokbuf("secondo ");
-if (p->priority == 2){
-      addokbuf("\n seconda priorita 2 ");
-
-  }
-  list_add(&p->p_next, head);
-}
-else  {/*Inserimento processi restanti in ordine
-  di priorita*/
-
-  pcb_t *ptr;
-  list_for_each_entry(ptr,head,p_next){
-
-    if (p->priority >= ptr->priority){
-      addokbuf("maggiore ");
-
-      list_add(&(p->p_next), &(ptr->p_next));
-
-      return head;
-    }
-  }
-  addokbuf("DIOCANE ");
-  if (p->priority == 1){
-      addokbuf("\nterza priorita 1 ");
-
-  }
-  list_add_tail(&(p->p_next), &(ptr->p_next));
-
-}
 }
 
 

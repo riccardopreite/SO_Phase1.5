@@ -180,7 +180,6 @@ void test1()
         delay_ms((getRANDOM() >> 8) * 100);
         test1_baton[i] = 1;
     }
-    termprint("dopo for!\n", 0);
 
     while (test3_baton[STEPS] == 0)
         ;

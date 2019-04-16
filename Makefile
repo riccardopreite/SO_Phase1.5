@@ -24,9 +24,6 @@ LDFLAGS = -G 0 -nostdlib -T $(UMPS2_DATA_DIR)/umpscore.ldscript
 
 # Add the location of crt*.S to the search path
 VPATH = $(UMPS2_DATA_DIR)
-OBJECT_DIR = ./object/
-SRC_DIR = ./source
-HEAD_DIR = 	./header/
 .PHONY : all clean
 
 all: kernel.core.umps
@@ -34,39 +31,12 @@ all: kernel.core.umps
 kernel.core.umps: kernel
 	umps2-elf2umps -k $<
 
-kernel:   crtso.o pcb.o libumps.o p1.5test_rikaya_v0.o asl.o main.o scheduler.o interrupts.o handlers.o utils.o
+kernel:  source/main.o crtso.o libumps.o source/scheduler.o source/pcb.o source/asl.o source/interrupts.o source/scheduler.o source/syscall.o source/p1.5test_rikaya_v0.o source/utils.o
 	$(LD) -o $@ $^ $(LDFLAGS)
 
-
-
-
-asl.o: ./source/asl.c
-	$(CC) -c $< $(CFLAGS)
-
- pcb.o: ./source/pcb.c
-	$(CC) -c $< $(CFLAGS)
-
-main.o: ./source/main.c
-	$(CC) -c $< $(CFLAGS)
-
-scheduler.o: ./source/scheduler.c
-	$(CC) -c $< $(CFLAGS)
-
-interrupts.o: ./source/interrupts.c
-	$(CC) -c $< $(CFLAGS)
-
-handlers.o: ./source/handlers.c
-	$(CC) -c $< $(CFLAGS)
-
-utils.o: ./source/utils.c
-	$(CC) -c $< $(CFLAGS)
-
-p1.5test_rikaya_v0.o: ./source/p1.5test_rikaya_v0.c
-	$(CC) -c $< $(CFLAGS)
-
 clean:
-	-rm -f *.o kernel kernel.*.umps
+	find . -name "*.o" -o -name "kernel" -o -name "kernel.*.umps" -o -name "term*.umps" -type f|xargs rm -f
 
 # Pattern rule for assembly modules
 %.o : %.S
-	$(CC) $(CFLAGS) $(OBJECT_DIR) -c -o $@ $<
+	$(CC) $(CFLAGS) -c -o $@ $<

@@ -1,5 +1,6 @@
 
 pcb_t *tmp;
+int x;
 struct list_head* ready_queue;
 state_t* new_old_areas[8];
 

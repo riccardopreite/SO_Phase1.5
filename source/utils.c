@@ -1,9 +1,26 @@
 #include "../header/header.h"
-void killMe(int cpuID){
-	outChildBlocked(tmp);
-	tmp = NULL;
-	LDST(&tmp);
+
+
+void KillProc(pcb_t *pcb){
+
+    if(pcb!=NULL){
+        while(!emptyChild(pcb)){
+            KillProc(removeChild(pcb));
+        }
+        outChild(pcb);
+        if(pcb == ptr){
+            ptr = NULL;
+        }
+
+        outProcQ(&ready_queue, pcb);
+        freePcb(pcb);
+    }
+
+    scheduler();
 }
+
+
+
 void saveArea(state_t* new,state_t* old) {
 	int i; for(i=0;i<29;i++){
 	(*old).gpr[i]=(*new).gpr[i];
@@ -16,17 +33,11 @@ void saveArea(state_t* new,state_t* old) {
 	(*old).lo=(*new).lo;
 }
 
+
+
 void setProc(state_t* temp, int n){
 	/*settaggio registri*/
-	//proc->p_s.status = proc->p_s.status & ~STATUS_KUc;
-	//proc->p_s.status = proc->p_s.status & ~STATUS_VMc;
-	tmp->p_s.status = tmp->p_s.status | STATUS_INT_UNMASKED;
-	tmp->p_s.status = tmp->p_s.status & ~VM_OFF;
-	tmp->p_s.status = tmp->p_s.status & ~KM_ON;
-	tmp->p_s.status = tmp->p_s.status | STATUS_TE;
-	//proc->p_s.status = proc->p_s.status | STATUS_TE;
-	//proc->p_s.status = proc->p_s.status | STATUS_IEc;
-	//proc->p_s.status = proc->p_s.status | STATUS_IEp;
+	temp->status = (((0 | INT_MASK_TIME_ON) & VM_OFF) & KM_ON) | STATUS_TE;
 
 	/*Assegnamento StackPointer*/
 	temp->reg_sp = RAMTOP - FRAME_SIZE * n;

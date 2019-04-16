@@ -1,17 +1,13 @@
 #include "../header/header.h"
-int n = 3;
-
-
+int n;
 struct list_head* returnhead(){
   return ready_queue;
 }
-
-
-
 void initArea(memaddr area, memaddr handler){
   //Creo la nuova area che punta alla vecchia
 
   state_t* newarea = (state_t *)area;
+
   //Salvo lo stato attuale del processore
   STST(newarea);
 
@@ -22,31 +18,20 @@ void initArea(memaddr area, memaddr handler){
   newarea->pc_epc = handler;
 
   /*Settata ker mode on, interrupt mascherati & disabilitata virtual memory & attivato timer cpu*/
-  //newarea->status = newarea->status & ~STATUS_IEc;
-  //newarea->status = newarea->status & ~STATUS_IEp;
-  //newarea->status = newarea->status & ~STATUS_KUc;
-  //newarea->status = newarea->status & ~STATUS_VMc;
-  //newarea->status = newarea->status & ~STATUS_INT_UNMASKED;
-  //newarea->status = newarea->status | STATUS_TE;
-
-	newarea->status = newarea->status & ~STATUS_INT_UNMASKED;
-//  newarea->status = newarea->status & ~STATUS_IEc;
-	newarea->status = newarea->status & ~VM_OFF;
-	newarea->status = newarea->status & ~KM_ON;
-	newarea->status = newarea->status | STATUS_TE;
+  newarea->status = (((0 & ~STATUS_INT_UNMASKED) & VM_OFF) & KM_ON) | STATUS_TE;
 }
 
 
 
 int main(){
 
-  /* Inizializzazione delle due new Area necessarie*/
-
+  /* Inizializzazione delle new Area*/
   initArea(INT_NEWAREA, (memaddr)interruptHandler);
   initArea(SYSBK_NEWAREA, (memaddr)sysHandler);
+  initArea(TLB_NEWAREA, 0);
+  initArea(PGMTRAP_NEWAREA, 0);
 
   /*Inizializzazione Pcb*/
-
   initPcbs();
 
   /*Inizializzazione ready_queue*/
@@ -54,66 +39,42 @@ int main(){
 
 
   /*Creazione dei 3 processi per i 3 test*/
-  addokbuf("inizio\n");
+  for(n = 3; n > 0; n = n-1){
+    tmp = allocPcb();
 
-tmp = allocPcb();
+    if(tmp != NULL){
+      setProc(&(tmp->p_s),n);
 
-  if(tmp != NULL){
-    setProc(&(tmp->p_s),n);
+      /*Assegniamo priorità n*/
+      tmp->priority = n;
 
-	/*Assegniamo priorità n*/
-	tmp->priority = n;
+      /*Assegniamo anche la priorità originiale"*/
+      tmp->original_priority = n;
+      /*switch per assegnare l'indirizzo di memoria del test da eseguire*/
 
-	/*Assegniamo anche la priorità originiale"*/
-	tmp->original_priority = n;
+      switch (n) {
+        case 3:
+        tmp->p_s.pc_epc = (memaddr)test3;
+        break;
 
-  n--;
+        case 2:
+        tmp->p_s.pc_epc = (memaddr)test2;
+        break;
 
-    tmp->p_s.pc_epc = (memaddr)test3;
+        case 1:
+        tmp->p_s.pc_epc = (memaddr)test1;
+        break;
 
+      }
+      /*inserimento del processo nella coda*/
+      insertProcQ(&ready_queue,tmp);
+    }
+    else{
+      PANIC();
+    }
   }
-  insertProcQ(&ready_queue,tmp);
-
-tmp = NULL;
-tmp = allocPcb();
-  if(tmp != NULL){
-    setProc(&(tmp->p_s),n);
-
-	/*Assegniamo priorità n*/
-	tmp->priority = n;
-
-	/*Assegniamo anche la priorità originiale"*/
-	tmp->original_priority = n;
-    n--;
-    tmp->p_s.pc_epc = (memaddr)test2;
-
-  }
-  insertProcQ(&ready_queue,tmp);
-
-  tmp = NULL;
-  tmp = allocPcb();
-
-  if(tmp != NULL){
-    setProc(&(tmp->p_s),n);
-
-	/*Assegniamo priorità n*/
-	tmp->priority = n;
-
-	/*Assegniamo anche la priorità originiale"*/
-	tmp->original_priority = n;
-    
-    
-  tmp->p_s.pc_epc = (memaddr)test1;
-
-  }
-  insertProcQ(&ready_queue,tmp);
-
-  
-
-  
-
-  scheduler();
 
 
+scheduler();
 
 }
