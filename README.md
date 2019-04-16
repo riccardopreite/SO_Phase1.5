@@ -9,7 +9,7 @@ Fase 1.5 del progetto di Sistemi Operativi
   
 # Per compilare:
     Entrare nella cartella master e dare il comando make;
-    Verrano generati i file .core e .stab da inserire nella macchina (il file contente la macchina è già presente nel caso         qualcuno voglia usarlo);
+    Verrano generati i file .core e .stab da inserire nella macchina (il file contente la macchina è già presente nel casoqualcuno voglia usarlo);
     Per pulire il tutto basta un make clean;
   
   
