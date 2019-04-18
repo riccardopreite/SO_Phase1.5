@@ -3,8 +3,8 @@
 
 void KillProc(pcb_t *pcb){
 
-    if(pcb!=NULL){
-        while(!emptyChild(pcb)){
+    if(pcb!=NULL){                        //Controlla che il processo passato non sia NULL, rimuove i processi figli
+        while(!emptyChild(pcb)){          //dalla coda, mette a NULL il processo padre e richiama lo scheduler
             KillProc(removeChild(pcb));
         }
         outChild(pcb);
@@ -22,7 +22,7 @@ void KillProc(pcb_t *pcb){
 
 
 void saveArea(state_t* new,state_t* old) {
-	int i; for(i=0;i<29;i++){
+	int i; for(i=0;i<29;i++){                  //Copia lo stato della OldArea nello stato del processo passato
 	(*old).gpr[i]=(*new).gpr[i];
 }
 	(*old).entry_hi=(*new).entry_hi;
@@ -36,7 +36,7 @@ void saveArea(state_t* new,state_t* old) {
 
 
 void setProc(state_t* temp, int n){
-	/*settaggio registri*/
+	/*settaggio registri*/               
 	temp->status = (((0 | INT_MASK_TIME_ON) & VM_OFF) & KM_ON) | STATUS_TE;
 
 	/*Assegnamento StackPointer*/

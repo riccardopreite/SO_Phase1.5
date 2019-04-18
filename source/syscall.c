@@ -3,7 +3,7 @@
 
 void sysHandler(){
 
-    /*Ricavo la causa (BreakPoint o SystemCall)*/
+    /*Ricavo la causa*/
     unsigned int cause = CAUSE_EXCCODE_GET(getCAUSE());
     /*Ricavo il tipo di exceptions*/
     unsigned int a0 = ((state_t*) SYSBK_OLDAREA)->reg_a0;
@@ -15,7 +15,7 @@ void sysHandler(){
           switch (a0) {
 
             case SYS3:
-              x--;
+              x--;              //Chiamo la funzione per uccidere il processo e la sua progenie
               KillProc(ptr);
               break;
 

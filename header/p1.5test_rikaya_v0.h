@@ -5,9 +5,9 @@
 #include "listx.h"
 #include "pcb.h"
 
-static unsigned int get_microseconds();
+//static unsigned int get_microseconds();
 
-static void delay_ms(unsigned int ms);
+//static void delay_ms(unsigned int ms);
 
 //devreg_t termstat(memaddr *stataddr);
 

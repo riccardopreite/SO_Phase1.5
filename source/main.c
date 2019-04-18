@@ -3,7 +3,7 @@ int n;
 struct list_head* returnhead(){
   return ready_queue;
 }
-void initArea(memaddr area, memaddr handler){
+HIDDEN void initArea(memaddr area, memaddr handler){
   //Creo la nuova area che punta alla vecchia
 
   state_t* newarea = (state_t *)area;
@@ -35,7 +35,7 @@ int main(){
   initPcbs();
 
   /*Inizializzazione ready_queue*/
-  mkEmptyProcQ(&ready_queue);
+  mkEmptyProcQ(&(ready_queue));
 
 
   /*Creazione dei 3 processi per i 3 test*/
@@ -67,7 +67,7 @@ int main(){
 
       }
       /*inserimento del processo nella coda*/
-      insertProcQ(&ready_queue,tmp);
+      insertProcQ(&(ready_queue),tmp);
     }
     else{
       PANIC();
