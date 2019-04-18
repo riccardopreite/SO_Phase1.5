@@ -15,8 +15,7 @@ void sysHandler(){
           switch (a0) {
 
             case SYS3:
-              x--;              //Chiamo la funzione per uccidere il processo e la sua progenie
-              KillProc(ptr);
+              KillProc(ptr);   //Chiamo la funzione per uccidere il processo e la sua progenie
               break;
 
             default:
